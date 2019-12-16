@@ -22,32 +22,39 @@ public class UserDao {
         stmt2 = con.prepareStatement("INSERT INTO users VALUES(NULL, ?, ?)");
     }
     
-    public Optional<User> authenticateUser(User user) throws SQLException {
-        User u = null;
-        stmt1.setString(1,u.getUsername());
+    public boolean authenticateUser(User user) throws SQLException {
+        boolean result = false;
+        stmt1.setString(1,user.getUsername());
         ResultSet rs = stmt1.executeQuery();
         if (rs.next()) {
-            u.setId(rs.getInt("id"));
-            u.setUsername(rs.getString("name"));
-            u.setPassword(rs.getString("pass"));
+            if (rs.getString("password").equals(user.getPassword())){
+                result = true;
+            }
         }
-        return Optional.ofNullable(u);
+        return result;
     }
     
-    public void addUser(User user) throws SQLException {
-        User u = null;
-        stmt2.setString(1,u.getUsername());
-        stmt2.setString(2,u.getPassword());
-        stmt2.executeUpdate();
-    }
-    
-    public boolean getUser(String username) throws SQLException {
+    public boolean addUser(User user) throws SQLException {
         boolean result = false;
-        stmt1.setString(1, username);
-        if (stmt1.executeQuery().next()) {
+        if (!getUser(user.getUsername()).isPresent()) {
+            stmt2.setString(1,user.getUsername());
+            stmt2.setString(2,user.getPassword());
+            stmt2.executeUpdate();
             result = true;
         }
         return result;
+    }
+    
+    public Optional<User> getUser(String username) throws SQLException {
+        User user = new User();
+        stmt1.setString(1, username);
+        ResultSet rs = stmt1.executeQuery();
+        if (rs.next()) {
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            user.setId(rs.getInt("id"));
+        }
+        return Optional.ofNullable(user);
     }
     
     

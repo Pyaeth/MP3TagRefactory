@@ -4,6 +4,7 @@ import com.mp3tagrefactory.dao.UserDao;
 import com.mp3tagrefactory.model.User;
 import com.mp3tagrefactory.service.UserService;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import static resources.SavedVariables.isSavedUser;
 import static resources.SavedVariables.savedUser;
 /**
@@ -24,6 +25,7 @@ public class LoginFrame extends javax.swing.JFrame {
         }
         setVisible(true);
         jButton1.addActionListener(ev -> login());
+        jButton2.addActionListener(ev -> createUser());
     }
     
     private void login() {
@@ -48,12 +50,33 @@ public class LoginFrame extends javax.swing.JFrame {
             User user = new User();
             user.setUsername(u);
             user.setPassword(p);
-            dao.authenticateUser(user);
+            if(dao.authenticateUser(user)) {
+                new SelectMusic();
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error: Invalid username/password combination!");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
+    private void createUser() {
+        User user = new User();
+        user.setUsername(jTextField1.getText());
+        user.setPassword(new String(jPasswordField1.getText()));
+        try {
+            UserDao dao = new UserDao(UserService.getInstance().getConnection());
+            if(dao.addUser(user)) {
+                new SelectMusic();
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error: Username already exists!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

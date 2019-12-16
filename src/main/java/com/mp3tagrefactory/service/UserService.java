@@ -12,7 +12,7 @@ public class UserService {
     private Connection con;
     private String url = "jdbc:mysql://localhost/tagrefactorydb";
     private String user = "deskapp";
-    private String pass = "";
+    private String pass = "ETZdg9_YY@Z*jRz";
     
     private UserService() {
         try {

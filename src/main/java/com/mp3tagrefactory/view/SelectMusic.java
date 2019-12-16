@@ -1,9 +1,16 @@
 package com.mp3tagrefactory.view;
 
+import com.mp3tagrefactory.controller.Mp3Controller;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
 /**
@@ -12,25 +19,57 @@ import javax.swing.filechooser.FileSystemView;
  */
 public class SelectMusic extends javax.swing.JFrame {
 
-    public DefaultListModel<File> model;
+    public DefaultListModel<String> model;
+    private ArrayList<String> tracks = null;
+    private ArrayList<File> files;
 
     public SelectMusic() {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+        model = new DefaultListModel();
+        jList1.setModel(model);
         jButton1.addActionListener(ev -> selectFolder(ev));
+        jMenuItem4.addActionListener(ev -> System.exit(0));
+        jButton2.addActionListener(ev -> startRefactory());
     }
 
     private void selectFolder(ActionEvent e) {
+        File selectedFolder;
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = jfc.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jfc.getSelectedFile();
-            System.out.println(selectedFile.getAbsolutePath());
+            selectedFolder = jfc.getSelectedFile();
+            files = Arrays.asList(selectedFolder.listFiles()).stream()
+                    .filter(elem -> elem.getName().endsWith(".mp3"))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            tracks = files.stream()
+                    .map(f -> f.getName())
+                    .collect(Collectors.toCollection(ArrayList::new));
+            listTracks();
         }
     }
-
+    
+    private void listTracks() {
+        model.clear();
+        if (tracks != null && !tracks.isEmpty()) {
+            tracks.forEach(model::addElement);
+        } else {
+            JOptionPane.showMessageDialog(null, "No mp3 files found in the selected folder.");
+        }
+    }
+    
+    private void startRefactory() {
+        try {
+            Mp3Controller controller = new Mp3Controller();
+            files.stream().forEach(controller::refactory);
+        } catch (Exception ex) {
+            Logger.getLogger(SelectMusic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
