@@ -2,6 +2,8 @@ package com.mp3tagrefactory.view;
 
 import com.mp3tagrefactory.controller.Mp3Controller;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,18 +14,19 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
+import resources.SavedVariables;
 
 /**
  *
  * @author amicu
  */
-public class SelectMusic extends javax.swing.JFrame {
+public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
 
     public DefaultListModel<String> model;
     private ArrayList<String> tracks = null;
     private ArrayList<File> files;
 
-    public SelectMusic() {
+    public RefactoryFrame() {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
@@ -33,8 +36,86 @@ public class SelectMusic extends javax.swing.JFrame {
         jButton1.addActionListener(ev -> selectFolder(ev));
         jMenuItem4.addActionListener(ev -> System.exit(0));
         jButton2.addActionListener(ev -> startRefactory());
+        
+        jCheckBox1.addItemListener(this);
+        jCheckBox2.addItemListener(this);
+        jCheckBox3.addItemListener(this);
+        jCheckBox4.addItemListener(this);
+        jCheckBox5.addItemListener(this);
+        jCheckBox6.addItemListener(this);
+        jCheckBox7.addItemListener(this);
+        
+        
     }
-
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        Object source = e.getItemSelectable();
+        if (source == jCheckBox1) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsContributingArtistsSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsContributingArtistsSelected(false);
+            }
+        }
+        
+        if (source == jCheckBox2) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsTitleSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsTitleSelected(false);
+            }
+        }
+        
+        if (source == jCheckBox3) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsAlbumSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsAlbumSelected(false);
+            }
+        }
+        
+        if (source == jCheckBox4) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsYearSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsYearSelected(false);
+            }
+        }
+        
+        if (source == jCheckBox5) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsAlbumArtistsSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsAlbumArtistsSelected(false);
+            }
+        }
+        
+        if (source == jCheckBox6) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsGenreSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsGenreSelected(false);
+            }
+        }
+        
+        if (source == jCheckBox7) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                SavedVariables.setIsTrackNoSelected(true);
+            }
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                SavedVariables.setIsTrackNoSelected(false);
+            }
+        }
+        
+        
+    }
+    
     private void selectFolder(ActionEvent e) {
         File selectedFolder;
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -51,7 +132,7 @@ public class SelectMusic extends javax.swing.JFrame {
             listTracks();
         }
     }
-    
+
     private void listTracks() {
         model.clear();
         if (tracks != null && !tracks.isEmpty()) {
@@ -60,16 +141,16 @@ public class SelectMusic extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No mp3 files found in the selected folder.");
         }
     }
-    
+
     private void startRefactory() {
         try {
             Mp3Controller controller = new Mp3Controller();
             files.stream().forEach(controller::refactory);
         } catch (Exception ex) {
-            Logger.getLogger(SelectMusic.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RefactoryFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

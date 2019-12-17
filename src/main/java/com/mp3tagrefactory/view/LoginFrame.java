@@ -5,53 +5,30 @@ import com.mp3tagrefactory.model.User;
 import com.mp3tagrefactory.service.UserService;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import static resources.SavedVariables.isSavedUser;
-import static resources.SavedVariables.savedUser;
 /**
  *
  * @author amicu
  */
 public class LoginFrame extends javax.swing.JFrame {
-    
+
     public LoginFrame() {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
-        
-        if (isSavedUser) {
-            jCheckBox1.setSelected(true);
-            jTextField1.setEnabled(false);
-            jTextField1.setText(savedUser);
-        }
         setVisible(true);
         jButton1.addActionListener(ev -> login());
         jButton2.addActionListener(ev -> createUser());
     }
-    
     private void login() {
         String u = jTextField1.getText();
         String p = new String(jPasswordField1.getPassword());
-        if (jCheckBox1.isSelected()) {
-            if(!u.equals(savedUser)) {
-                savedUser = u;
-                if (!isSavedUser) {
-                    isSavedUser = true;
-                } 
-            }
-        } else {
-            if (isSavedUser) {
-                isSavedUser = false;
-                jTextField1.setText("");
-                jTextField1.setEnabled(true);
-            }
-        }
         try {
             UserDao dao = new UserDao(UserService.getInstance().getConnection());
             User user = new User();
             user.setUsername(u);
             user.setPassword(p);
             if(dao.authenticateUser(user)) {
-                new SelectMusic();
+                new RefactoryFrame();
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Error: Invalid username/password combination!");
@@ -60,7 +37,6 @@ public class LoginFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
     private void createUser() {
         User user = new User();
         user.setUsername(jTextField1.getText());
@@ -68,7 +44,7 @@ public class LoginFrame extends javax.swing.JFrame {
         try {
             UserDao dao = new UserDao(UserService.getInstance().getConnection());
             if(dao.addUser(user)) {
-                new SelectMusic();
+                new RefactoryFrame();
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Error: Username already exists!");
@@ -77,7 +53,7 @@ public class LoginFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -86,7 +62,6 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jPasswordField1 = new javax.swing.JPasswordField();
-        jCheckBox1 = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
@@ -99,8 +74,6 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel1.setText("Username:");
 
         jLabel2.setText("Password:");
-
-        jCheckBox1.setText("Remember my credentials on this PC.");
 
         jButton1.setBackground(new java.awt.Color(0, 240, 0));
         jButton1.setText("Login");
@@ -129,9 +102,9 @@ public class LoginFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel2)
@@ -142,12 +115,7 @@ public class LoginFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jTextField1)
                             .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jCheckBox1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3)))
+                    .addComponent(jLabel3))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -170,9 +138,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(42, 42, 42)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
@@ -188,7 +154,6 @@ public class LoginFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
