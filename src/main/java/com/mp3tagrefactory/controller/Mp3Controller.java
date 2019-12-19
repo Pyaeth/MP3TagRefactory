@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mp3tagrefactory.controller;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
 import resources.SavedVariables;
 
@@ -37,6 +31,7 @@ public class Mp3Controller {
         }
 
     }
+    
     public void mapMethodNames(String methodName, Mp3File mp3file, File originalFile) {
         java.lang.reflect.Method method;
         try {
@@ -59,7 +54,6 @@ public class Mp3Controller {
             ID3v2 id3v2tag = mp3file.getId3v2Tag();
             filename = mp3file.getFilename();
             id3v2tag.setTitle(filename.split(" - ")[1].split("\\.")[0]);
-            //System.out.println(mp3file.getId3v2Tag().getTitle());
         }
     }
 
@@ -75,7 +69,8 @@ public class Mp3Controller {
         if (mp3file.hasId3v2Tag()) {
             ID3v2 id3v2tag = mp3file.getId3v2Tag();
             filename = mp3file.getFilename();
-            id3v2tag.setAlbumArtist(filename.split(" - ")[0]);
+            String[] aux = filename.split(" - ")[0].split("\\\\");
+            id3v2tag.setAlbumArtist(aux[aux.length-1]);
         }
     }
 
@@ -83,7 +78,8 @@ public class Mp3Controller {
         if (mp3file.hasId3v2Tag()) {
             ID3v2 id3v2tag = mp3file.getId3v2Tag();
             filename = mp3file.getFilename();
-            id3v2tag.setComposer(filename.split(" - ")[0]);
+            String[] aux = filename.split(" - ")[0].split("\\\\");
+            id3v2tag.setArtist(aux[aux.length-1]);
         }
     }
 

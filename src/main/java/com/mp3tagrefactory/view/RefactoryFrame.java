@@ -1,6 +1,7 @@
 package com.mp3tagrefactory.view;
 
 import com.mp3tagrefactory.controller.Mp3Controller;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -25,18 +26,23 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
     public DefaultListModel<String> model;
     private ArrayList<String> tracks = null;
     private ArrayList<File> files;
+    private File selectedFolder;
 
     public RefactoryFrame() {
+        //setUndecorated(true);
         initComponents();
-        setResizable(false);
+        setResizable(true);
         setLocationRelativeTo(null);
+        jButton2.setEnabled(false);
         setVisible(true);
+
         model = new DefaultListModel();
         jList1.setModel(model);
         jButton1.addActionListener(ev -> selectFolder(ev));
         jMenuItem4.addActionListener(ev -> System.exit(0));
         jButton2.addActionListener(ev -> startRefactory());
-        
+        jButton3.addActionListener(ev -> openFolder());
+
         jCheckBox1.addItemListener(this);
         jCheckBox2.addItemListener(this);
         jCheckBox3.addItemListener(this);
@@ -44,9 +50,9 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
         jCheckBox5.addItemListener(this);
         jCheckBox6.addItemListener(this);
         jCheckBox7.addItemListener(this);
-        
-        
+
     }
+
     @Override
     public void itemStateChanged(ItemEvent e) {
         Object source = e.getItemSelectable();
@@ -58,7 +64,7 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsContributingArtistsSelected(false);
             }
         }
-        
+
         if (source == jCheckBox2) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 SavedVariables.setIsTitleSelected(true);
@@ -67,7 +73,7 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsTitleSelected(false);
             }
         }
-        
+
         if (source == jCheckBox3) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 SavedVariables.setIsAlbumSelected(true);
@@ -76,7 +82,7 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsAlbumSelected(false);
             }
         }
-        
+
         if (source == jCheckBox4) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 SavedVariables.setIsYearSelected(true);
@@ -85,7 +91,7 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsYearSelected(false);
             }
         }
-        
+
         if (source == jCheckBox5) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 SavedVariables.setIsAlbumArtistsSelected(true);
@@ -94,7 +100,7 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsAlbumArtistsSelected(false);
             }
         }
-        
+
         if (source == jCheckBox6) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 SavedVariables.setIsGenreSelected(true);
@@ -103,7 +109,7 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsGenreSelected(false);
             }
         }
-        
+
         if (source == jCheckBox7) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 SavedVariables.setIsTrackNoSelected(true);
@@ -112,12 +118,10 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                 SavedVariables.setIsTrackNoSelected(false);
             }
         }
-        
-        
+
     }
-    
+
     private void selectFolder(ActionEvent e) {
-        File selectedFolder;
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = jfc.showOpenDialog(null);
@@ -129,7 +133,20 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
             tracks = files.stream()
                     .map(f -> f.getName())
                     .collect(Collectors.toCollection(ArrayList::new));
+            if (!tracks.isEmpty()) {
+                jButton2.setEnabled(true);
+            }
             listTracks();
+        }
+    }
+    
+    private void openFolder() {
+        try {
+            Desktop.getDesktop().open(selectedFolder);
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "No selected folder found!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -169,16 +186,12 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
         jCheckBox6 = new javax.swing.JCheckBox();
         jCheckBox7 = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
-        jProgressBar1 = new javax.swing.JProgressBar();
         jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -192,23 +205,28 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
         jLabel4.setText("Choose which fields to populate:");
 
         jCheckBox1.setText("Contributing artists");
+        jCheckBox1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jCheckBox2.setText("Title");
+        jCheckBox2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jCheckBox3.setText("Album");
+        jCheckBox3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jCheckBox4.setText("Year");
+        jCheckBox4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jCheckBox5.setText("Album artist");
+        jCheckBox5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jCheckBox6.setText("Genre");
+        jCheckBox6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jCheckBox7.setText("Track no.#");
+        jCheckBox7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jButton2.setBackground(new java.awt.Color(24, 240, 24));
         jButton2.setText("START!");
-
-        jProgressBar1.setBackground(new java.awt.Color(0, 240, 0));
 
         jLabel2.setText("Operation details:");
 
@@ -225,16 +243,6 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-
-        jMenuItem1.setText("Undo");
-        jMenu2.add(jMenuItem1);
-
-        jMenuItem2.setText("Redo");
-        jMenu2.add(jMenuItem2);
-
-        jMenuBar1.add(jMenu2);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -244,54 +252,62 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 22, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jScrollBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(62, 62, 62)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jButton1)))
-                                .addGap(29, 29, 29)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jCheckBox1)
                                             .addComponent(jCheckBox2)
+                                            .addComponent(jCheckBox1)
                                             .addComponent(jCheckBox5)
                                             .addComponent(jCheckBox3)
                                             .addComponent(jCheckBox4)
                                             .addComponent(jCheckBox7)
-                                            .addComponent(jCheckBox6)))))
+                                            .addComponent(jCheckBox6))))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton1))
                             .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
-                .addGap(218, 218, 218)
+                .addGap(259, 259, 259)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jCheckBox1, jCheckBox2, jCheckBox3, jCheckBox4, jCheckBox5, jCheckBox6, jCheckBox7});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton1)
-                    .addComponent(jLabel4))
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jCheckBox2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCheckBox1)
@@ -305,16 +321,16 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
                         .addComponent(jCheckBox7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCheckBox6)
-                        .addGap(18, 18, 18)
+                        .addGap(35, 35, 35)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(38, 38, 38)
                 .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jCheckBox1, jCheckBox2, jCheckBox3, jCheckBox4, jCheckBox5, jCheckBox6, jCheckBox7});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -335,13 +351,9 @@ public class RefactoryFrame extends javax.swing.JFrame implements ItemListener {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JList<String> jList1;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
