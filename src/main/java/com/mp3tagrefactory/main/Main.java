@@ -10,7 +10,7 @@ import javax.swing.plaf.metal.OceanTheme;
 public class Main {
 
     public static void main(String[] args) {
-        WebQueryController wqc = new WebQueryController();
+        WebQueryController wqc = new WebQueryController("Wham - Last Christmas");
         try {
             // Set System L&F
         UIManager.setLookAndFeel(

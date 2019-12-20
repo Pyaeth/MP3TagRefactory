@@ -15,12 +15,13 @@ import java.net.URLEncoder;
  */
 public class WebQueryController {
 
-    public WebQueryController() {
-        String google = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCpNuxF4cpX_9QKs8ilPURTeLeHWwMI178&cx=007914092360642073305:kqccsvwusfd&q=";
-        String search = "Wham - Last Christmas";
-        String charset = "UTF-8";
-        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+    private final String google = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCpNuxF4cpX_9QKs8ilPURTeLeHWwMI178&cx=007914092360642073305:kqccsvwusfd&q=";
+    private final String charset = "UTF-8";
 
+    public WebQueryController(String search) {
+
+        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+        
         try {
             URL url = new URL(google + URLEncoder.encode(search, charset));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -35,7 +36,6 @@ public class WebQueryController {
             connection.disconnect();
             Gson gson = new Gson();
             JsonObject json = gson.fromJson(resultString, JsonObject.class);
-            //JsonObject json = gson.fromJson(resultString, JsonObject.class);
             String album, genre;
             int year, trackno;
 
@@ -46,4 +46,5 @@ public class WebQueryController {
             e.printStackTrace();
         }
     }
+    
 }
